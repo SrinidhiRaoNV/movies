@@ -1,0 +1,27 @@
+  <body>
+    <header>
+      <section class="container">
+        <nav role="navigation">
+          <ul>
+            <%= if Pow.Plug.current_user(@conn) do %>
+              <li><a href="/admin/movies">My WatchList</a></li>
+
+            <% else %>
+              <li><a href="/session/new">Login</a></li>
+            <% end %>
+            <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+              <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
+            <% end %>
+          </ul>
+        </nav>
+        <a href="/" class="phx-logo">
+          Movies
+        </a>
+      </section>
+    </header>
+    <main role="main" class="container">
+      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+      <%= @inner_content %>
+    </main>
+  </body>

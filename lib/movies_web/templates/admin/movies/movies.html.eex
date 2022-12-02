@@ -1,0 +1,50 @@
+  <div class="torch-container">
+
+    <section id="torch-table">
+    <%= if length(@movies) > 0 do %>
+      <table>
+        <thead>
+          <tr>
+
+              <th><%= table_link(@conn, "Movie ID", :id) %></th>
+
+              <th><%= table_link(@conn, "Name", :name) %></th>
+
+              <th><%= table_link(@conn, "Description", :description) %></th>
+
+              <th><%= table_link(@conn, "Votes", :votes) %></th>
+
+              <th><%= table_link(@conn, "Watchlist", :watchlist) %></th>
+
+
+
+          </tr>
+        </thead>
+        <tbody>
+          <%= for movie <- @movies do %>
+            <tr>
+
+                <td><%= movie["id"] %></td>
+
+                <td><%= movie["original_title"] %></td>
+
+                <td><%= movie["overview"] %></td>
+
+                <td><%= movie["vote_count"] %></td>
+
+              <td class="torch-actions">
+
+                <span><%= link "Add to Watchlist", to: Routes.admin_movies_path(@conn, :add_to_watchlist, movie) %></span>
+
+              </td>
+
+
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="torch-no-data">No Stats.</p>
+    <% end %>
+    </section>
+</div>
