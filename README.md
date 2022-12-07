@@ -1,5 +1,16 @@
 # Movies
 
+Features Available
+
+* Login and Registering functionality 
+* User is able to search for a movie
+
+Features not available
+
+* Adding to watchlist
+* Reading back from watchlist
+* Deleting movies on the watchlist
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
