@@ -1,0 +1,47 @@
+<section id="torch-header-and-content">
+  <div class="torch-container">
+    <div class="header">
+      <h3>My WatchList</h3>
+      <br>
+    <section id="torch-table">
+    <%= if length(@movies) > 0 do %>
+      <table>
+        <thead>
+          <tr>
+
+              <th><%= table_link(@conn, "Movie ID", :id) %></th>
+
+              <th><%= table_link(@conn, "Name", :name) %></th>
+
+
+          </tr>
+        </thead>
+        <tbody>
+
+                  <%= for movie <- @movies do %>
+            <tr>
+
+                <td><%= movie.movie_id %></td>
+                <td><%= movie.name %></td>
+                <td class="torch-actions">
+
+                <span><%= link "Remove from Watchlist", to: Routes.admin_movies_path(@conn, :delete, movie_id: movie.id) %></span>
+
+              </td>
+
+
+                            </tr>
+
+                          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="torch-no-data">No Movies in your watchlist, go ahead, add some.</p>
+    <% end %>
+    </section>
+
+
+
+
+
+</section>

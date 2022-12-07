@@ -4,7 +4,7 @@ defmodule Movies.Users.User do
 
   schema "users" do
     pow_user_fields()
-
+    has_many :movies, Movies.Movie
     timestamps()
   end
 end

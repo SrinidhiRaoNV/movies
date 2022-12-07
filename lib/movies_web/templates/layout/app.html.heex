@@ -4,7 +4,7 @@
         <nav role="navigation">
           <ul>
             <%= if Pow.Plug.current_user(@conn) do %>
-              <li><a href="/admin/movies">My WatchList</a></li>
+              <li><a href="/admin/movies/index">My WatchList</a></li>
 
             <% else %>
               <li><a href="/session/new">Login</a></li>

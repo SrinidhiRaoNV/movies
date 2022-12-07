@@ -2,68 +2,10 @@ defmodule MoviesWeb.Admin.MoviesController do
   use MoviesWeb, :controller
 
   alias Movies.HTTP.API, as: HTTPClient
-
-  #  plug(:put_root_layout, {CandyMartWeb.LayoutView, "torch.html"})
-
-  # def index(conn, params) do
-  #   case Orders.paginate_orders(params) do
-  #     {:ok, assigns} ->
-  #       render(conn, "index.html", assigns)
-  #     error ->
-  #       conn
-  #       |> put_flash(:error, "There was an error rendering Orders. #{inspect(error)}")
-  #       |> redirect(to: Routes.admin_order_path(conn, :index))
-  #   end
-  # end
-
-  # def new(conn, _params) do
-  #   changeset = Orders.change_order(%Order{})
-  #   render(conn, "new.html", changeset: changeset)
-  # end
-
-  # def create(conn, %{"order" => order_params}) do
-  #   case Orders.create_order(order_params) do
-  #     {:ok, order} ->
-  #       conn
-  #       |> put_flash(:info, "Order created successfully.")
-  #       |> redirect(to: Routes.admin_order_path(conn, :show, order))
-  #     {:error, %Ecto.Changeset{} = changeset} ->
-  #       render(conn, "new.html", changeset: changeset)
-  #   end
-  # end
-
-  # def show(conn, %{"id" => id}) do
-  #   order = Orders.get_order!(id)
-  #   render(conn, "show.html", order: order)
-  # end
-
-  # def edit(conn, %{"id" => id}) do
-  #   order = Orders.get_order!(id)
-  #   changeset = Orders.change_order(order)
-  #   render(conn, "edit.html", order: order, changeset: changeset)
-  # end
-
-  # def update(conn, %{"id" => id, "order" => order_params}) do
-  #   order = Orders.get_order!(id)
-
-  #   case Orders.update_order(order, order_params) do
-  #     {:ok, order} ->
-  #       conn
-  #       |> put_flash(:info, "Order updated successfully.")
-  #       |> redirect(to: Routes.admin_order_path(conn, :show, order))
-  #     {:error, %Ecto.Changeset{} = changeset} ->
-  #       render(conn, "edit.html", order: order, changeset: changeset)
-  #   end
-  # end
-
-  # def delete(conn, %{"id" => id}) do
-  #   order = Orders.get_order!(id)
-  #   {:ok, _order} = Orders.delete_order(order)
-
-  #   conn
-  #   |> put_flash(:info, "Order deleted successfully.")
-  #   |> redirect(to: Routes.admin_order_path(conn, :index))
-  # end
+  import Ecto.Query, warn: false
+  alias Movies.Repo
+  alias Movies.Movie
+alias Movies.Users.User
 
   def search(conn, %{"search" => movie_name}) do
     path = "https://api.themoviedb.org/3/search/movie?api_key=7e719bfe3cd3786ebf0a05d3b138853d"
@@ -85,5 +27,44 @@ defmodule MoviesWeb.Admin.MoviesController do
 
   def add_to_watchlist(conn, params) do
     IO.inspect(params)
+    params = %{name: params["original_title"], movie_id: params["id"], user_id: 1}
+    c = Movie.changeset(%Movie{}, params)
+    IO.inspect(c, label: "chagestet")
+    Repo.insert(c)
+    conn
+    |> redirect(to: Routes.admin_movies_path(conn, :index))
+  end
+
+  @spec index(Plug.Conn.t(), any) :: Plug.Conn.t()
+  def index(conn, params) do
+    IO.inspect params, label: "params"
+    current_user = conn.assigns[:current_user]
+    IO.inspect current_user.email
+    e = current_user.email
+    #assigns = Repo.all(from m in Movie, where: m.email == ^current_user, select: m.name )
+    assigns = Repo.get_by(User, email: e)
+    IO.inspect assigns
+    IO.puts "1"
+    a = assigns
+    |> Repo.preload([:movies])
+    IO.puts "11"
+    IO.inspect a
+    movies_list = a.movies
+    IO.inspect movies_list, label: "list"
+    render(conn, "index.html", movies: movies_list)
+
+  end
+
+
+  def delete(conn, %{"movie_id" => movie_id}) do
+    IO.puts "hjerer"
+    IO.inspect movie_id, label: "deleting this guy"
+    #Repo.delete(movie_id)
+    from(x in Movie, where: x.id == ^movie_id) |> Repo.delete_all
+
+
+    conn
+    |> redirect(to: Routes.admin_movies_path(conn, :index))
+
   end
 end

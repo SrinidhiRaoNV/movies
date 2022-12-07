@@ -35,6 +35,9 @@ defmodule MoviesWeb.Router do
 
     get "/movies/search", MoviesController, :search
     get "/movies/watchlist", MoviesController, :add_to_watchlist
+    get "/movies/index", MoviesController, :index
+    get "/movies/delete", MoviesController, :delete
+
   end
 
   # Other scopes may use custom stacks.
